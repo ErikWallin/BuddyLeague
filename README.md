@@ -19,28 +19,28 @@ the most correct information
 Since this is not in production, the base URI is not set.
 
 ### Get leagues
-GET http://<base uri>/league
+GET http://{base uri}/league
 
 ### Create league
-POST http://<base uri>/league
+POST http://{base uri}/league
 
 ### Get league
-GET http://<base uri>/league/{leagueId}
+GET http://{base uri}/league/{leagueId}
 
 ### Delete league
-DELETE http://<base uri>/league/{leagueId}
+DELETE http://{base uri}/league/{leagueId}
 
 ### Get league table (standings)
-DELETE http://<base uri>/league/{leagueId}/table
+DELETE http://{base uri}/league/{leagueId}/table
 
 ### Add player to league
-POST http://<base uri>/league/{leagueId}/player
+POST http://{base uri}/league/{leagueId}/player
 
 ### Delete player to league
-DELETE http://<base uri>/league/{leagueId}/player/{playerId}
+DELETE http://{base uri}/league/{leagueId}/player/{playerId}
 
 ### Add game to league
-POST http://<base uri>/league/{leagueId}/game
+POST http://{base uri}/league/{leagueId}/game
 
 ### Delete game to league
-DELETE http://<base uri>/league/{leagueId}/game/{gameId}
+DELETE http://{base uri}/league/{leagueId}/game/{gameId}
