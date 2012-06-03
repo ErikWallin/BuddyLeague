@@ -1,0 +1,18 @@
+
+.leftArea {
+	position: absolute;
+	top: 70px;
+	left: 10px;
+	bottom: 20px;
+	width: 260px;
+	overflow-y: scroll;
+}
+
+.mainArea {
+	position: absolute;
+	top: 70px;
+	left: 300px;
+	bottom: 20px;
+	width:300px;
+	overflow-y: scroll;
+}

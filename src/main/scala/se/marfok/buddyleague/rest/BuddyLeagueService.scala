@@ -14,7 +14,7 @@ import se.marfok.buddyleague.domain.MemoryRepository
 trait BuddyLeagueService extends Directives {
 
   val restService = {
-    pathPrefix("league") {
+    pathPrefix("rest/league") {
       path("") {
         get {
           _.complete(MemoryRepository.getLeagues.toJson.compactPrint)
