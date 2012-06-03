@@ -1,6 +1,8 @@
 
 $(document).ready(function() {
 	
+	$('#leagueDetails').hide();
+	
 	getLeagues();
 	
 	$('#leagueList a').live('click', function() {
@@ -42,11 +44,15 @@ function getLeagueStandings(id) {
 function renderLeagues(leagues) {
 	$('#leagueList li').remove();
 	$.each(leagues, function(index, league) {
-		$('#leagueList').append('<li><a href="#" data-identity="' + league.id + '">' + league.id + '</a></li>');
+		$('#leagueList').append('<li><a href="#" data-identity="' + league.id + '">' + league.name + '</a></li>');
 	});
 }
 
 function renderLeague(league) {
+	
+	$('#leagueDetails').show();
+	
+	$('#leagueName').text(league.name);
 	$('#leagueId').text(league.id);
 	
 	$('#playerList li').remove();

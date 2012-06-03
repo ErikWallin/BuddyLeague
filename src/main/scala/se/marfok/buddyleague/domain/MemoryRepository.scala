@@ -83,7 +83,7 @@ class MemoryRepository extends Actor {
     Game(1, Set(1, 2), Set(3), Score(6, 3)),
     Game(2, Set(1), Set(3), Score(2, 4)),
     Game(3, Set(3), Set(1, 2), Score(0, 8)))
-  var leagues: Map[Long, League] = Map(1l -> League(1, players, games))
+  var leagues: Map[Long, League] = Map(1l -> League(1, "Innebandytimmen", players, games))
 
   protected def receive = {
     case CreateLeague(league) => {
