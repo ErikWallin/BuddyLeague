@@ -7,29 +7,26 @@
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 		<script src="js/main.js"></script>
     </head>
+    
     <body>
         <div class="leftArea">
-    		Leagues
+    		<h2>Leagues</h2>
 			<ul id="leagueList"></ul>
 		</div>
 		
 		<div class="mainArea" id="leagueDetails">
-			Id: <span id="leagueId"></span>
+			<h2>Information</h2>
+			League id: <span id="leagueId"></span>
 			
-			<div class="standings">
-				<h2>Standings</h2>
-				<ol id="standingsList"></ol>
-			</div>
+			<h2>Standings</h2>
+			<table id="standingsTable">
+			</table>
 			
-			<div class="players">
-				<h2>Players</h2>
-				<ul id="playerList"></ul>
-			</div>
+			<h2>Players</h2>
+			<ul id="playerList"></ul>
 			
-			<div class="games">
-				<h2>Games</h2>
-				<ul id="gameList"></ul>
-			</div>
+			<h2>Games</h2>
+			<ul id="gameList"></ul>
 		</div>
     </body>
 </html>

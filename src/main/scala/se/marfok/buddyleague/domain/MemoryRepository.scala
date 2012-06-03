@@ -81,8 +81,8 @@ class MemoryRepository extends Actor {
   val players: List[Player] = List(player1, player2, player3)
   val games: List[Game] = List(
     Game(1, Set(1, 2), Set(3), Score(6, 3)),
-    Game(1, Set(1), Set(3), Score(2, 4)),
-    Game(1, Set(3), Set(1, 2), Score(0, 8)))
+    Game(2, Set(1), Set(3), Score(2, 4)),
+    Game(3, Set(3), Set(1, 2), Score(0, 8)))
   var leagues: Map[Long, League] = Map(1l -> League(1, players, games))
 
   protected def receive = {

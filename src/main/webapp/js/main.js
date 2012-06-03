@@ -51,18 +51,30 @@ function renderLeague(league) {
 	
 	$('#playerList li').remove();
 	$.each(league.players, function(index, player) {
-		$('#playerList').append('<li><a href="#" data-identity="' + player.id + '">' + player.id + ': ' + player.firstName + ' ' + player.surName + '</a></li>');
+		$('#playerList').append('<li>' + player.firstName + ' ' + player.surName + '</li>');
 	});
 	
 	$('#gameList li').remove();
 	$.each(league.games, function(index, game) {
-		$('#gameList').append('<li>[' + game.home + '] vs [' + game.away + '] ' + game.score.home + '-' + game.score.away + '</li>');
+		var item = '<li>[';
+		$.each(game.home, function(index, id) {
+			var homePlayer = league.players[id - 1];
+			item += homePlayer.firstName + ' ' + homePlayer.surName + ', ';
+		});
+		item = item.substr(0, item.length - 2) + '] vs [';
+		$.each(game.away, function(index, id) {
+			var awayPlayer = league.players[id - 1];
+			item += awayPlayer.firstName + ' ' + awayPlayer.surName + ', ';
+		});
+		item = item.substr(0, item.length - 2) + ']: ';
+		item += game.score.home + '-' + game.score.away + '</li>';
+		$('#gameList').append(item);
 	});
 }
 
 function renderLeagueStandings(standings) {
-	$('#standingsList li').remove();
+	$('#standingsTable tr').remove();
 	$.each(standings, function(index, entry) {
-		$('#standingsList').append('<li>' + entry[0].firstName + ' ' + entry[0].surName + ' ' + entry[1].home + '-' + entry[1].away + '</li>');
+		$('#standingsTable').append('<tr><td>' + (index + 1) + '</td><td>' + entry[0].firstName + ' ' + entry[0].surName + '</td><td class=\"score\">' + entry[1].home + '</td><td class=\"score\">' + entry[1].away + '</td></tr>');
 	});
 }

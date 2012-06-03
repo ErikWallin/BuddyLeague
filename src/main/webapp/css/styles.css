@@ -4,7 +4,7 @@
 	top: 70px;
 	left: 10px;
 	bottom: 20px;
-	width: 260px;
+	width: 200px;
 	overflow-y: scroll;
 }
 
@@ -13,6 +13,10 @@
 	top: 70px;
 	left: 300px;
 	bottom: 20px;
-	width:300px;
+	width: 800px;
 	overflow-y: scroll;
+}
+
+td.score {
+	text-align:right;
 }
