@@ -4,7 +4,7 @@ import org.slf4j.LoggerFactory
 import akka.config.Supervision._
 import akka.actor.{Supervisor, Actor}
 import cc.spray.{SprayCanRootService, HttpService}
-import cc.spray.can.HttpServer
+import cc.spray.can.{HttpServer, ServerConfig}
 import se.marfok.buddyleague.domain.MemoryRepository
 
 object Boot extends App {
@@ -15,9 +15,12 @@ object Boot extends App {
     // bake your module cake here
   }
   
+  val host = "0.0.0.0" 
+  val port = Option(System.getenv("PORT")).getOrElse("8080").toInt 
+  
   val httpService    = Actor.actorOf(new HttpService(mainModule.restService))
   val rootService    = Actor.actorOf(new SprayCanRootService(httpService))
-  val sprayCanServer = Actor.actorOf(new HttpServer())
+  val sprayCanServer = Actor.actorOf(new HttpServer(new ServerConfig(host = host, port = port)))
 
   Supervisor(
     SupervisorConfig(
