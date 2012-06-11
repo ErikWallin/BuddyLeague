@@ -1,5 +1,6 @@
 import sbt._
 import Keys._
+import com.typesafe.startscript.StartScriptPlugin
 import cc.spray.revolver.RevolverPlugin._
 
 object Build extends sbt.Build {
@@ -7,6 +8,7 @@ object Build extends sbt.Build {
 
   lazy val myProject = Project("BuddyLeague", file("."))
     .settings(Revolver.settings: _*)
+    .settings(StartScriptPlugin.startScriptForClassesSettings: _*)
     .settings(
       organization := "se.marfok.buddyleague",
       version := "0.9.0",
