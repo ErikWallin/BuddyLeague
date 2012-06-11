@@ -1,31 +1,32 @@
 package se.marfok.buddyleague.rest
 
-import akka.actor.Actor.actorOf
-import akka.actor.Supervisor
-import akka.config.Supervision.OneForOneStrategy
-import akka.config.Supervision.Permanent
-import akka.config.Supervision.Supervise
-import akka.config.Supervision.SupervisorConfig
-import cc.spray.HttpService
-import cc.spray.RootService
+import org.slf4j.LoggerFactory
+import akka.config.Supervision._
+import akka.actor.{Supervisor, Actor}
+import cc.spray.{SprayCanRootService, HttpService}
+import cc.spray.can.HttpServer
 import se.marfok.buddyleague.domain.MemoryRepository
 
-class Boot {
-  
+object Boot extends App {
+
+  LoggerFactory.getLogger(getClass) // initialize SLF4J early
+
   val mainModule = new BuddyLeagueService {
     // bake your module cake here
   }
-
-  val restService = actorOf(new HttpService(mainModule.restService))
-  val rootService = actorOf(new RootService(restService))
+  
+  val httpService    = Actor.actorOf(new HttpService(mainModule.restService))
+  val rootService    = Actor.actorOf(new SprayCanRootService(httpService))
+  val sprayCanServer = Actor.actorOf(new HttpServer())
 
   Supervisor(
     SupervisorConfig(
       OneForOneStrategy(List(classOf[Exception]), 3, 100),
       List(
-        Supervise(restService, Permanent),
         Supervise(MemoryRepository.storeActor, Permanent),
-        Supervise(rootService, Permanent)
+        Supervise(httpService, Permanent),
+        Supervise(rootService, Permanent),
+        Supervise(sprayCanServer, Permanent)
       )
     )
   )

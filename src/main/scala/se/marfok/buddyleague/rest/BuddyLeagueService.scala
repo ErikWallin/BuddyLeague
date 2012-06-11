@@ -14,7 +14,7 @@ import se.marfok.buddyleague.domain.MemoryRepository
 trait BuddyLeagueService extends Directives {
 
   val restService = {
-    pathPrefix("rest/league") {
+    pathPrefix("league") {
       path("") {
         get {
           _.complete(MemoryRepository.getLeagues.toJson.compactPrint)
@@ -29,72 +29,72 @@ trait BuddyLeagueService extends Directives {
             }
           }
       } ~
-      pathPrefix(LongNumber) { leagueId =>
-        path("") {
-          get { ctx =>
-            MemoryRepository.getLeague(leagueId) match {
-              case Some(league) => ctx.complete(league.toJson.compactPrint)
-              case None => ctx.fail(StatusCodes.NotFound, "League with id=" + leagueId + " is not found.")
-            }
-          } ~
-            delete { ctx =>
-              MemoryRepository.deleteLeague(leagueId) match {
-                case true => ctx.complete("League with id=" + leagueId + " deleted.")
-                case false => ctx.fail(StatusCodes.NotFound, "League with id=" + leagueId + " is not found.")
-              }
-            }
-        } ~
-        path("table") {
-          get { ctx =>
-            MemoryRepository.getLeague(leagueId) match {
-              case Some(league) => ctx.complete(league.getTable.toJson.compactPrint)
-              case None => ctx.fail(StatusCodes.NotFound, "League with id=" + leagueId + " is not found.")
-            }
-          }
-        } ~
-        pathPrefix("player") {
+        pathPrefix(LongNumber) { leagueId =>
           path("") {
-            post {
-              content(as[Player]) { player =>
-                ctx =>
-                  MemoryRepository.addPlayerToLeague(leagueId, player) match {
-                    case true => ctx.complete("Player with id=" + player.id + " created in league with id " + leagueId + ".")
-                    case false => ctx.fail(StatusCodes.NotFound, "Player with id=" + player.id + " could not be created in league with id " + leagueId + ".")
-                  }
+            get { ctx =>
+              MemoryRepository.getLeague(leagueId) match {
+                case Some(league) => ctx.complete(league.toJson.compactPrint)
+                case None => ctx.fail(StatusCodes.NotFound, "League with id=" + leagueId + " is not found.")
               }
-            }
+            } ~
+              delete { ctx =>
+                MemoryRepository.deleteLeague(leagueId) match {
+                  case true => ctx.complete("League with id=" + leagueId + " deleted.")
+                  case false => ctx.fail(StatusCodes.NotFound, "League with id=" + leagueId + " is not found.")
+                }
+              }
           } ~
-          path(LongNumber) { playerId =>
-            delete { ctx =>
-              MemoryRepository.deletePlayerFromLeague(leagueId, playerId) match {
-                case true => ctx.complete("Player with id=" + playerId + " deleted in league with id " + leagueId + ".")
-                case false => ctx.fail(StatusCodes.NotFound, "League with id=" + leagueId + "or player with id " + playerId + " is not found.")
+            path("table") {
+              get { ctx =>
+                MemoryRepository.getLeague(leagueId) match {
+                  case Some(league) => ctx.complete(league.getTable.toJson.compactPrint)
+                  case None => ctx.fail(StatusCodes.NotFound, "League with id=" + leagueId + " is not found.")
+                }
               }
-            }
-          }
-        } ~
-        pathPrefix("game") {
-          path("") {
-            post {
-              content(as[Game]) { game =>
-                ctx =>
-                  MemoryRepository.addGameToLeague(leagueId, game) match {
-                    case true => ctx.complete("Game with id=" + game.id + " created in league with id " + leagueId + ".")
-                    case false => ctx.fail(StatusCodes.NotFound, "Game with id=" + game.id + " could not be created in league with id " + leagueId + ".")
+            } ~
+            pathPrefix("player") {
+              path("") {
+                post {
+                  content(as[Player]) { player =>
+                    ctx =>
+                      MemoryRepository.addPlayerToLeague(leagueId, player) match {
+                        case true => ctx.complete("Player with id=" + player.id + " created in league with id " + leagueId + ".")
+                        case false => ctx.fail(StatusCodes.NotFound, "Player with id=" + player.id + " could not be created in league with id " + leagueId + ".")
+                      }
                   }
-              }
+                }
+              } ~
+                path(LongNumber) { playerId =>
+                  delete { ctx =>
+                    MemoryRepository.deletePlayerFromLeague(leagueId, playerId) match {
+                      case true => ctx.complete("Player with id=" + playerId + " deleted in league with id " + leagueId + ".")
+                      case false => ctx.fail(StatusCodes.NotFound, "League with id=" + leagueId + "or player with id " + playerId + " is not found.")
+                    }
+                  }
+                }
+            } ~
+            pathPrefix("game") {
+              path("") {
+                post {
+                  content(as[Game]) { game =>
+                    ctx =>
+                      MemoryRepository.addGameToLeague(leagueId, game) match {
+                        case true => ctx.complete("Game with id=" + game.id + " created in league with id " + leagueId + ".")
+                        case false => ctx.fail(StatusCodes.NotFound, "Game with id=" + game.id + " could not be created in league with id " + leagueId + ".")
+                      }
+                  }
+                }
+              } ~
+                path(LongNumber) { gameId =>
+                  delete { ctx =>
+                    MemoryRepository.deleteGameFromLeague(leagueId, gameId) match {
+                      case true => ctx.complete("Game with id=" + gameId + " deleted in league with id " + leagueId + ".")
+                      case false => ctx.fail(StatusCodes.NotFound, "League with id=" + leagueId + "or game with id " + gameId + " is not found.")
+                    }
+                  }
+                }
             }
-          } ~
-          path(LongNumber) { gameId =>
-            delete { ctx =>
-              MemoryRepository.deleteGameFromLeague(leagueId, gameId) match {
-                case true => ctx.complete("Game with id=" + gameId + " deleted in league with id " + leagueId + ".")
-                case false => ctx.fail(StatusCodes.NotFound, "League with id=" + leagueId + "or game with id " + gameId + " is not found.")
-              }
-            }
-          }
         }
-      }
     }
   }
 }
