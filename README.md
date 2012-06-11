@@ -5,7 +5,7 @@ This project aims to provide individual statistics to a team activity. The
 scenario is that you play floor ball with your friends once a week. It's often
 many smaller games with different combinations of players. Some player maybe
 win 4 of 5 games, and is thus ranked before a player with only 2 wins. This
-project is mainly the REST Api, but provides a very simple web gui.
+project is mainly the REST Api, but will later provide a simple web gui.
 
 You can use the [REST Client for 
 Firefox plugin](https://addons.mozilla.org/en-US/firefox/addon/9780/) to test
