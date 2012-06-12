@@ -24,43 +24,33 @@ class DomainObjectsSpec extends Specification {
     }
   }
 
-  "A League with errors" should {
-    val player1 = Player(1, "Tore", "Svensson")
-    val player2 = Player(2, "Sven", "Turbo")
-    val player2_2 = Player(2, "Arne", "Anka")
-    val player3 = Player(3, "Kalle", "Anka")
-    val game1 = Game(1, Set(1), Set(3), Score(3, 1))
-    val game2 = Game(2, Set(3), Set(1), Score(2, 2))
-    val game2_2 = Game(2, Set(3), Set(1), Score(4, 0))
-    val league = League(1, "Innebandytimmen", List(player1, player2, player2_2), List(game1, game2, game2_2))
+  "A League" should {
+    val player1 = Player("Tore")
+    val player2 = Player("Sven")
+    val player3 = Player("Kalle")
+    val game1 = Game(1, Set(player1.name), Set(player3.name), Score(3, 1))
+    val game2 = Game(2, Set(player3.name), Set(player1.name), Score(2, 2))
+    val game3 = Game(3, Set(player3.name), Set(player1.name), Score(4, 0))
+    val league = League(1, "Innebandytimmen", List(player1, player2), List(game1, game2, game3))
     "get right player" in {
-      league.getPlayer(1) must beEqualTo(Some(player1))
+      league.getPlayer(player1.name) must beEqualTo(Some(player1))
     }
     "get no player" in {
-      league.getPlayer(4) must beEqualTo(None)
+      league.getPlayer("Bertil") must beEqualTo(None)
     }
     "get one player" in {
-      league.getPlayer(2) must beEqualTo(Some(player2)) or beEqualTo(Some(player2_2))
+      league.getPlayer(player2.name) must beEqualTo(Some(player2))
     }
     "get right game" in {
       league.getGame(1) must beEqualTo(Some(game1))
     }
     "get no game" in {
-      league.getGame(3) must beEqualTo(None)
+      league.getGame(4) must beEqualTo(None)
     }
     "get one game" in {
-      league.getGame(2) must beEqualTo(Some(game2)) or beEqualTo(Some(game2_2))
+      league.getGame(2) must beEqualTo(Some(game2))
     }
-  }
-
-  "A League" should {
     "return correct standings" in {
-      val player1 = Player(1, "Tore", "Svensson")
-      val player3 = Player(3, "Kalle", "Anka")
-      val game1 = Game(1, Set(1), Set(3), Score(3, 1))
-      val game2 = Game(2, Set(3), Set(1), Score(2, 2))
-      val game3 = Game(2, Set(3), Set(1), Score(4, 0))
-      val league = League(1, "Innebandytimmen", List(player1, player3), List(game1, game2, game3))
       val table = league.getTable
       table.size must beEqualTo(2)
       table(0)._1 must beEqualTo(player3)

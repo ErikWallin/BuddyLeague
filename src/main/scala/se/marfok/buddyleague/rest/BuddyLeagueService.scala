@@ -1,6 +1,6 @@
 package se.marfok.buddyleague.rest
 
-import cc.spray.directives.LongNumber
+import cc.spray.directives.{LongNumber, Remaining}
 import cc.spray.http.StatusCodes
 import cc.spray.json.pimpAny
 import cc.spray.json._
@@ -58,17 +58,17 @@ trait BuddyLeagueService extends Directives {
                   content(as[Player]) { player =>
                     ctx =>
                       MemoryRepository.addPlayerToLeague(leagueId, player) match {
-                        case true => ctx.complete("Player with id=" + player.id + " created in league with id " + leagueId + ".")
-                        case false => ctx.fail(StatusCodes.NotFound, "Player with id=" + player.id + " could not be created in league with id " + leagueId + ".")
+                        case true => ctx.complete("Player with name=" + player.name + " created in league with id " + leagueId + ".")
+                        case false => ctx.fail(StatusCodes.NotFound, "Player with name=" + player.name + " could not be created in league with id " + leagueId + ".")
                       }
                   }
                 }
               } ~
-                path(LongNumber) { playerId =>
+                path(Remaining) { playerName =>
                   delete { ctx =>
-                    MemoryRepository.deletePlayerFromLeague(leagueId, playerId) match {
-                      case true => ctx.complete("Player with id=" + playerId + " deleted in league with id " + leagueId + ".")
-                      case false => ctx.fail(StatusCodes.NotFound, "League with id=" + leagueId + "or player with id " + playerId + " is not found.")
+                    MemoryRepository.deletePlayerFromLeague(leagueId, playerName) match {
+                      case true => ctx.complete("Player with name=" + playerName + " deleted in league with id " + leagueId + ".")
+                      case false => ctx.fail(StatusCodes.NotFound, "League with name=" + leagueId + "or player with id " + playerName + " is not found.")
                     }
                   }
                 }

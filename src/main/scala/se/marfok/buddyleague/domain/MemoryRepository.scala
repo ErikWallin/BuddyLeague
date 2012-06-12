@@ -64,8 +64,8 @@ object MemoryRepository extends Repository {
     }
   }
 
-  override def deletePlayerFromLeague(leagueId: Long, playerId: Long): Boolean = {
-    (storeActor ? DeletePlayerFromLeague(leagueId, playerId)).as[Boolean] match {
+  override def deletePlayerFromLeague(leagueId: Long, playerName: String): Boolean = {
+    (storeActor ? DeletePlayerFromLeague(leagueId, playerName)).as[Boolean] match {
       case Some(true) => true
       case Some(false) => false
       case None => false
@@ -75,14 +75,14 @@ object MemoryRepository extends Repository {
 
 class MemoryRepository extends Actor {
 
-  val player1 = Player(1, "Erik", "Wallin")
-  val player2 = Player(2, "Sven", "Hurtig")
-  val player3 = Player(3, "Adam", "Lind")
+  val player1 = Player("Erik")
+  val player2 = Player("Sven")
+  val player3 = Player("Adam")
   val players: List[Player] = List(player1, player2, player3)
   val games: List[Game] = List(
-    Game(1, Set(1, 2), Set(3), Score(6, 3)),
-    Game(2, Set(1), Set(3), Score(2, 4)),
-    Game(3, Set(3), Set(1, 2), Score(0, 8)))
+    Game(1, Set(player1.name, player2.name), Set(player3.name), Score(6, 3)),
+    Game(2, Set(player1.name), Set(player3.name), Score(2, 4)),
+    Game(3, Set(player3.name), Set(player1.name, player2.name), Score(0, 8)))
   var leagues: Map[Long, League] = Map(1l -> League(1, "Innebandytimmen", players, games))
 
   protected def receive = {
@@ -140,11 +140,11 @@ class MemoryRepository extends Actor {
         }
       }
     }
-    case DeletePlayerFromLeague(leagueId, playerId) => {
+    case DeletePlayerFromLeague(leagueId, playerName) => {
       leagues.get(leagueId) match {
         case None => self.reply(false)
         case Some(league) => {
-          league.getPlayer(playerId) match {
+          league.getPlayer(playerName) match {
             case Some(player) => {
               leagues = leagues - leagueId
               leagues = leagues + (leagueId -> league.copy(players = league.players.filterNot(_ == player)))
