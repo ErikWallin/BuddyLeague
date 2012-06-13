@@ -68,7 +68,7 @@ trait BuddyLeagueService extends Directives {
                   delete { ctx =>
                     MemoryRepository.deletePlayerFromLeague(leagueId, playerName) match {
                       case true => ctx.complete("Player with name=" + playerName + " deleted in league with id " + leagueId + ".")
-                      case false => ctx.fail(StatusCodes.NotFound, "League with name=" + leagueId + "or player with id " + playerName + " is not found.")
+                      case false => ctx.fail(StatusCodes.NotFound, "League with id=" + leagueId + "or player with name " + playerName + " is not found.")
                     }
                   }
                 }
