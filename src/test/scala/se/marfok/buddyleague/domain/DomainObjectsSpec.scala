@@ -31,7 +31,7 @@ class DomainObjectsSpec extends Specification {
     val game1 = Game(1, Set(player1.name), Set(player3.name), Score(3, 1))
     val game2 = Game(2, Set(player3.name), Set(player1.name), Score(2, 2))
     val game3 = Game(3, Set(player3.name), Set(player1.name), Score(4, 0))
-    val league = League(1, "Innebandytimmen", List(player1, player2, player3), List(game1, game2, game3))
+    val league = League("Innebandytimmen", List(player1, player2, player3), List(game1, game2, game3))
     "get right player" in {
       league.getPlayer(player1.name) must beEqualTo(Some(player1))
     }

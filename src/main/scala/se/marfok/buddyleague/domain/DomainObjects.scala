@@ -9,7 +9,7 @@ case class Score(home: Int, away: Int) {
 }
 case class Player(name: String)
 case class Game(id: Long, home: Set[String], away: Set[String], score: Score)
-case class League(id: Long, name: String, players: List[Player], games: List[Game]) {
+case class League(name: String, players: List[Player], games: List[Game]) {
 
   def getTable: List[(Player, Score)] = {
     var playerScores: collection.mutable.Map[Player, Score] = collection.mutable.Map() ++ players.map(p => p -> Score(0, 0)).toMap

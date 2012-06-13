@@ -18,8 +18,8 @@ object MemoryRepository extends Repository {
     }
   }
 
-  override def getLeague(id: Long): Option[League] = {
-    (storeActor ? GetLeague(id)).as[Option[League]] match {
+  override def getLeague(name: String): Option[League] = {
+    (storeActor ? GetLeague(name)).as[Option[League]] match {
       case Some(Some(league)) => Some(league)
       case Some(None) => None
       case None => None
@@ -32,40 +32,40 @@ object MemoryRepository extends Repository {
       case None => List()
     }
   }
-  override def deleteLeague(id: Long): Boolean = {
-    (storeActor ? DeleteLeague(id)).as[Boolean] match {
+  override def deleteLeague(name: String): Boolean = {
+    (storeActor ? DeleteLeague(name)).as[Boolean] match {
       case Some(true) => true
       case Some(false) => false
       case None => false
     }
   }
 
-  override def addGameToLeague(leagueId: Long, game: Game): Boolean = {
-    (storeActor ? AddGameToLeague(leagueId, game)).as[Boolean] match {
+  override def addGameToLeague(leagueName: String, game: Game): Boolean = {
+    (storeActor ? AddGameToLeague(leagueName, game)).as[Boolean] match {
       case Some(true) => true
       case Some(false) => false
       case None => false
     }
   }
 
-  override def deleteGameFromLeague(leagueId: Long, gameId: Long): Boolean = {
-    (storeActor ? DeleteGameFromLeague(leagueId, gameId)).as[Boolean] match {
+  override def deleteGameFromLeague(leagueName: String, gameId: Long): Boolean = {
+    (storeActor ? DeleteGameFromLeague(leagueName, gameId)).as[Boolean] match {
       case Some(true) => true
       case Some(false) => false
       case None => false
     }
   }
 
-  override def addPlayerToLeague(leagueId: Long, player: Player): Boolean = {
-    (storeActor ? AddPlayerToLeague(leagueId, player)).as[Boolean] match {
+  override def addPlayerToLeague(leagueName: String, player: Player): Boolean = {
+    (storeActor ? AddPlayerToLeague(leagueName, player)).as[Boolean] match {
       case Some(true) => true
       case Some(false) => false
       case None => false
     }
   }
 
-  override def deletePlayerFromLeague(leagueId: Long, playerName: String): Boolean = {
-    (storeActor ? DeletePlayerFromLeague(leagueId, playerName)).as[Boolean] match {
+  override def deletePlayerFromLeague(leagueName: String, playerName: String): Boolean = {
+    (storeActor ? DeletePlayerFromLeague(leagueName, playerName)).as[Boolean] match {
       case Some(true) => true
       case Some(false) => false
       case None => false
@@ -83,35 +83,35 @@ class MemoryRepository extends Actor {
     Game(1, Set(player1.name, player2.name), Set(player3.name), Score(6, 3)),
     Game(2, Set(player1.name), Set(player3.name), Score(2, 4)),
     Game(3, Set(player3.name), Set(player1.name, player2.name), Score(0, 8)))
-  var leagues: Map[Long, League] = Map(1l -> League(1, "Innebandytimmen", players, games))
+  var leagues: Map[String, League] = Map("Innebandytimmen" -> League("Innebandytimmen", players, games))
 
   protected def receive = {
     case CreateLeague(league) => {
-      leagues.contains(league.id) match {
+      leagues.contains(league.name) match {
         case true => self.reply(false)
         case false => {
-          leagues = leagues + (league.id -> league)
+          leagues = leagues + (league.name -> league)
           self.reply(true)
         }
       }
     }
     case GetLeague(id) => self.reply(leagues.get(id))
     case GetLeagues() => self.reply(leagues.values)
-    case DeleteLeague(id) => {
-      leagues.contains(id) match {
+    case DeleteLeague(leagueName) => {
+      leagues.contains(leagueName) match {
         case false => self.reply(false)
         case true => {
-          leagues = leagues - id
+          leagues = leagues - leagueName
           self.reply(true)
         }
       }
     }
-    case AddGameToLeague(leagueId, game) => {
-      leagues.get(leagueId) match {
+    case AddGameToLeague(leagueName, game) => {
+      leagues.get(leagueName) match {
         case None => self.reply(false)
         case Some(league) => {
-          leagues = leagues - leagueId
-          leagues = leagues + (leagueId -> league.copy(games = game :: league.games))
+          leagues = leagues - leagueName
+          leagues = leagues + (leagueName -> league.copy(games = game :: league.games))
           self.reply(true)
         }
       }
