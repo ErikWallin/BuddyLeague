@@ -1,6 +1,6 @@
 package se.marfok.buddyleague.rest
 
-import cc.spray.directives.{LongNumber, PathElement, Remaining}
+import cc.spray.directives.{ LongNumber, PathElement, Remaining }
 import cc.spray.http.StatusCodes
 import cc.spray.json.pimpAny
 import cc.spray.json._
@@ -79,17 +79,17 @@ trait BuddyLeagueService extends Directives {
                   content(as[Game]) { game =>
                     ctx =>
                       MemoryRepository.addGameToLeague(leagueName, game) match {
-                        case true => ctx.complete("Game with id=" + game.id + " created in league with name=" + leagueName + ".")
-                        case false => ctx.fail(StatusCodes.NotFound, "Game with id=" + game.id + " could not be created in league with name=" + leagueName + ".")
+                        case true => ctx.complete("Game with timestamp=" + game.timestamp + " created in league with name=" + leagueName + ".")
+                        case false => ctx.fail(StatusCodes.NotFound, "Game with timestamp=" + game.timestamp + " could not be created in league with name=" + leagueName + ".")
                       }
                   }
                 }
               } ~
-                path(LongNumber) { gameId =>
+                path(LongNumber) { gameTimestamp =>
                   delete { ctx =>
-                    MemoryRepository.deleteGameFromLeague(leagueName, gameId) match {
-                      case true => ctx.complete("Game with id=" + gameId + " deleted in league with name=" + leagueName + ".")
-                      case false => ctx.fail(StatusCodes.NotFound, "League with name=" + leagueName + "or game with id=" + gameId + " is not found.")
+                    MemoryRepository.deleteGameFromLeague(leagueName, gameTimestamp) match {
+                      case true => ctx.complete("Game with timestamp=" + gameTimestamp + " deleted in league with name=" + leagueName + ".")
+                      case false => ctx.fail(StatusCodes.NotFound, "League with name=" + leagueName + "or game with timestamp=" + gameTimestamp + " is not found.")
                     }
                   }
                 }

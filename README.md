@@ -29,22 +29,22 @@ GET http://{base uri}/league
 POST http://{base uri}/league
 
 ### Get league
-GET http://{base uri}/league/{leagueId}
+GET http://{base uri}/league/{leagueName}
 
 ### Delete league
-DELETE http://{base uri}/league/{leagueId}
+DELETE http://{base uri}/league/{leagueName}
 
 ### Get league table (standings)
-DELETE http://{base uri}/league/{leagueId}/table
+DELETE http://{base uri}/league/{leagueName}/table
 
 ### Add player to league
-POST http://{base uri}/league/{leagueId}/player
+POST http://{base uri}/league/{leagueName}/player
 
 ### Delete player to league
-DELETE http://{base uri}/league/{leagueId}/player/{playerId}
+DELETE http://{base uri}/league/{leagueName}/player/{playerName}
 
 ### Add game to league
-POST http://{base uri}/league/{leagueId}/game
+POST http://{base uri}/league/{leagueName}/game
 
 ### Delete game to league
-DELETE http://{base uri}/league/{leagueId}/game/{gameId}
+DELETE http://{base uri}/league/{leagueName}/game/{gameTimestamp}

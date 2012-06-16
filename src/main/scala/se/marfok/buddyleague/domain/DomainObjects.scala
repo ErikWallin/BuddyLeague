@@ -8,7 +8,7 @@ case class Score(home: Int, away: Int) {
   def invert(): Score = Score(away, home)
 }
 case class Player(name: String)
-case class Game(id: Long, home: Set[String], away: Set[String], score: Score)
+case class Game(timestamp: Long, home: Set[String], away: Set[String], score: Score)
 case class League(name: String, players: List[Player], games: List[Game]) {
 
   def getTable: List[(Player, Score)] = {
@@ -36,8 +36,8 @@ case class League(name: String, players: List[Player], games: List[Game]) {
     }
   }
 
-  def getGame(id: Long): Option[Game] = {
-    games.filter(_.id == id) match {
+  def getGame(timestamp: Long): Option[Game] = {
+    games.filter(_.timestamp == timestamp) match {
       case Nil => None
       case game :: Nil => Some(game)
       case game :: tail => Some(game)
