@@ -1,15 +1,16 @@
 package se.marfok.buddyleague.domain
 
 import cc.spray.utils.Logging
+import com.novus.salat.annotations._
 
 case class Score(home: Int, away: Int) {
   def +(other: Score): Score = Score(home + other.home, away + other.away)
   def -(other: Score): Score = Score(home - other.home, away - other.away)
   def invert(): Score = Score(away, home)
 }
-case class Player(name: String)
-case class Game(timestamp: Long, home: Set[String], away: Set[String], score: Score)
-case class League(name: String, players: List[Player], games: List[Game]) {
+case class Player(@Key("_id") name: String)
+case class Game(@Key("_id") timestamp: Long, home: Set[String], away: Set[String], score: Score)
+case class League(@Key("_id") name: String, players: List[Player], games: List[Game]) {
 
   def getTable: List[(Player, Score)] = {
     var playerScores: collection.mutable.Map[Player, Score] = collection.mutable.Map() ++ players.map(p => p -> Score(0, 0)).toMap

@@ -27,8 +27,8 @@ object MemoryRepository extends Repository {
   }
 
   override def getLeagues(): List[League] = {
-    (storeActor ? GetLeagues()).as[Iterable[League]] match {
-      case Some(leagues) => leagues.toList
+    (storeActor ? GetLeagues()).as[List[League]] match {
+      case Some(leagues) => leagues
       case None => List()
     }
   }
@@ -75,15 +75,7 @@ object MemoryRepository extends Repository {
 
 class MemoryRepository extends Actor {
 
-  val player1 = Player("Erik")
-  val player2 = Player("Sven")
-  val player3 = Player("Adam")
-  val players: List[Player] = List(player1, player2, player3)
-  val games: List[Game] = List(
-    Game(1, Set(player1.name, player2.name), Set(player3.name), Score(6, 3)),
-    Game(2, Set(player1.name), Set(player3.name), Score(2, 4)),
-    Game(3, Set(player3.name), Set(player1.name, player2.name), Score(0, 8)))
-  var leagues: Map[String, League] = Map("Innebandytimmen" -> League("Innebandytimmen", players, games))
+  var leagues: Map[String, League] = Map()
 
   protected def receive = {
     case CreateLeague(league) => {
@@ -96,7 +88,7 @@ class MemoryRepository extends Actor {
       }
     }
     case GetLeague(name) => self.reply(leagues.get(name))
-    case GetLeagues() => self.reply(leagues.values)
+    case GetLeagues() => self.reply(leagues.values.toList)
     case DeleteLeague(leagueName) => {
       leagues.contains(leagueName) match {
         case false => self.reply(false)
@@ -124,6 +116,7 @@ class MemoryRepository extends Actor {
             case Some(game) => {
               leagues = leagues - leagueName
               leagues = leagues + (leagueName -> league.copy(games = league.games.filterNot(_ == game)))
+              self.reply(true)
             }
             case None => self.reply(false)
           }
@@ -148,6 +141,7 @@ class MemoryRepository extends Actor {
             case Some(player) => {
               leagues = leagues - leagueName
               leagues = leagues + (leagueName -> league.copy(players = league.players.filterNot(_ == player)))
+              self.reply(true)
             }
             case None => self.reply(false)
           }
