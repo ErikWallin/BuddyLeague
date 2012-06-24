@@ -13,7 +13,7 @@ import com.mongodb.casbah.Imports._
 import cc.spray.json._
 import com.novus.salat._
 import com.novus.salat.annotations._
-import com.novus.salat.global._
+import se.marfok.buddyleague.domain.when_necessary_context._
 
 object MongoDbRepository extends Repository {
 
