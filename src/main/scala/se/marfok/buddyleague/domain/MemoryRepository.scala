@@ -8,7 +8,7 @@ import akka.dispatch.Future
 
 object MemoryRepository extends Repository {
 
-  val storeActor = actorOf[MemoryRepository]
+  val storeActor = actorOf[MemoryStore]
 
   override def createLeague(league: League): Boolean = {
     (storeActor ? CreateLeague(league)).as[Boolean] match {
@@ -73,7 +73,7 @@ object MemoryRepository extends Repository {
   }
 }
 
-class MemoryRepository extends Actor {
+class MemoryStore extends Actor {
 
   var leagues: Map[String, League] = Map()
 

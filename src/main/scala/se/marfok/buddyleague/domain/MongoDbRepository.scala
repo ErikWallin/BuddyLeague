@@ -17,7 +17,7 @@ import com.novus.salat.global._
 
 object MongoDbRepository extends Repository {
 
-  val storeActor = actorOf[MongoDbRepository]
+  val storeActor = actorOf[MongoDbStore]
 
   override def createLeague(league: League): Boolean = {
     (storeActor ? CreateLeague(league)).as[Boolean] match {
@@ -82,12 +82,19 @@ object MongoDbRepository extends Repository {
   }
 }
 
-class MongoDbRepository extends Actor {
-  val mongolabUri = Properties.envOrElse("MONGOLAB_URI", "mongodb://127.0.0.1:27017/buddyleague")
-  val mongoURI = MongoURI(mongolabUri)
-  val mongoDB = mongoURI.connectDB
-  if (mongoURI.username != null && mongoURI.password != null) mongoDB.authenticate(mongoURI.username, mongoURI.password.toString())
-  var leagues = mongoDB("leagues")
+class MongoDbStore extends Actor {
+  
+  val leagues = connect.right.get
+  
+  def connect(): Either[Exception, MongoCollection] = {
+    val mongolabUri = Properties.envOrElse("MONGOLAB_URI", "mongodb://127.0.0.1:27017/buddyleague")
+	  val mongoURI = MongoURI(mongolabUri)
+	  val mongoDB = mongoURI.connectDB
+	  if (mongoURI.username != null && mongoURI.password != null) {
+	    val result = mongoDB.authenticate(mongoURI.username, mongoURI.password.foldLeft("")(_ + _.toString))
+	  }
+  	Right(mongoDB("leagues"))
+  }
 
   protected def receive = {
     case CreateLeague(league) => {

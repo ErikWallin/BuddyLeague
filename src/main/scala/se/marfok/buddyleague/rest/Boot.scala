@@ -33,7 +33,7 @@ object Boot extends App {
         Supervise(sprayCanServer, Permanent))))
 
   populateTestData()
-  
+
   def populateTestData(): Unit = {
     MemoryRepository.populateTestData()
     MongoDbRepository.populateTestData()
