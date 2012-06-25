@@ -1,17 +1,76 @@
 package se.marfok.buddyleague.domain
 
 import akka.dispatch.Future
+import akka.actor.ActorRef
+import se.marfok.buddyleague.domain.RepositoryMessages._
 
 trait Repository {
-  def createLeague(league: League): Boolean
-  def getLeague(name: String): Option[League]
-  def getLeagues: List[League]
-  def deleteLeague(name: String): Boolean
-  def addGameToLeague(leagueName: String, game: Game): Boolean
-  def deleteGameFromLeague(leagueName: String, gameTimestamp: Long): Boolean
-  def addPlayerToLeague(leagueName: String, player: Player): Boolean
-  def deletePlayerFromLeague(leagueName: String, playerName: String): Boolean
-  
+
+  def storeActor(): ActorRef
+
+  def createLeague(league: League): Boolean = {
+    (storeActor ? CreateLeague(league)).as[Boolean] match {
+      case Some(true) => true
+      case Some(false) => false
+      case None => false
+    }
+  }
+
+  def getLeague(name: String): Option[League] = {
+    (storeActor ? GetLeague(name)).as[Option[League]] match {
+      case Some(Some(league)) => Some(league)
+      case Some(None) => None
+      case None => None
+    }
+  }
+
+  def getLeagues(): List[League] = {
+    (storeActor ? GetLeagues()).as[List[League]] match {
+      case Some(leagues) => leagues
+      case None => List()
+    }
+  }
+
+  def deleteLeague(name: String): Boolean = {
+    (storeActor ? DeleteLeague(name)).as[Boolean] match {
+      case Some(true) => true
+      case Some(false) => false
+      case None => false
+    }
+  }
+
+  def addGameToLeague(leagueName: String, game: Game): Boolean = {
+    (storeActor ? AddGameToLeague(leagueName, game)).as[Boolean] match {
+      case Some(true) => true
+      case Some(false) => false
+      case None => false
+    }
+  }
+
+  def deleteGameFromLeague(leagueName: String, gameTimestamp: Long): Boolean = {
+    (storeActor ? DeleteGameFromLeague(leagueName, gameTimestamp)).as[Boolean] match {
+      case Some(true) => true
+      case Some(false) => false
+      case None => false
+    }
+  }
+
+  def addPlayerToLeague(leagueName: String, player: Player): Boolean = {
+    (storeActor ? AddPlayerToLeague(leagueName, player)).as[Boolean] match {
+      case Some(true) => true
+      case Some(false) => false
+      case None => false
+    }
+  }
+
+  def deletePlayerFromLeague(leagueName: String, playerName: String): Boolean = {
+    (storeActor ? DeletePlayerFromLeague(leagueName, playerName)).as[Boolean] match {
+      case Some(true) => true
+      case Some(false) => false
+      case None => false
+    }
+  }
+
   def populateTestData(): Unit = {
     val player1 = Player("Erik")
     val player2 = Player("Sven")
@@ -24,16 +83,4 @@ trait Repository {
     val league = League("Innebandytimmen", players, games)
     createLeague(league)
   }
-}
-
-object RepositoryMessages {
-  sealed trait RepositoryMessage
-  case class CreateLeague(league: League) extends RepositoryMessage
-  case class GetLeague(name: String) extends RepositoryMessage
-  case class GetLeagues() extends RepositoryMessage
-  case class DeleteLeague(name: String) extends RepositoryMessage
-  case class AddGameToLeague(leagueName: String, game: Game) extends RepositoryMessage
-  case class DeleteGameFromLeague(leagueName: String, gameTimestamp: Long) extends RepositoryMessage
-  case class AddPlayerToLeague(leagueName: String, player: Player) extends RepositoryMessage
-  case class DeletePlayerFromLeague(leagueName: String, playerName: String) extends RepositoryMessage
 }

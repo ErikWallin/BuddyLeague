@@ -8,69 +8,7 @@ import akka.dispatch.Future
 
 object MemoryRepository extends Repository {
 
-  val storeActor = actorOf[MemoryStore]
-
-  override def createLeague(league: League): Boolean = {
-    (storeActor ? CreateLeague(league)).as[Boolean] match {
-      case Some(true) => true
-      case Some(false) => false
-      case None => false
-    }
-  }
-
-  override def getLeague(name: String): Option[League] = {
-    (storeActor ? GetLeague(name)).as[Option[League]] match {
-      case Some(Some(league)) => Some(league)
-      case Some(None) => None
-      case None => None
-    }
-  }
-
-  override def getLeagues(): List[League] = {
-    (storeActor ? GetLeagues()).as[List[League]] match {
-      case Some(leagues) => leagues
-      case None => List()
-    }
-  }
-  override def deleteLeague(name: String): Boolean = {
-    (storeActor ? DeleteLeague(name)).as[Boolean] match {
-      case Some(true) => true
-      case Some(false) => false
-      case None => false
-    }
-  }
-
-  override def addGameToLeague(leagueName: String, game: Game): Boolean = {
-    (storeActor ? AddGameToLeague(leagueName, game)).as[Boolean] match {
-      case Some(true) => true
-      case Some(false) => false
-      case None => false
-    }
-  }
-
-  override def deleteGameFromLeague(leagueName: String, gameTimestamp: Long): Boolean = {
-    (storeActor ? DeleteGameFromLeague(leagueName, gameTimestamp)).as[Boolean] match {
-      case Some(true) => true
-      case Some(false) => false
-      case None => false
-    }
-  }
-
-  override def addPlayerToLeague(leagueName: String, player: Player): Boolean = {
-    (storeActor ? AddPlayerToLeague(leagueName, player)).as[Boolean] match {
-      case Some(true) => true
-      case Some(false) => false
-      case None => false
-    }
-  }
-
-  override def deletePlayerFromLeague(leagueName: String, playerName: String): Boolean = {
-    (storeActor ? DeletePlayerFromLeague(leagueName, playerName)).as[Boolean] match {
-      case Some(true) => true
-      case Some(false) => false
-      case None => false
-    }
-  }
+  override val storeActor = actorOf[MemoryStore]
 }
 
 class MemoryStore extends Actor {
