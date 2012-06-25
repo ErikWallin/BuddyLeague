@@ -89,11 +89,11 @@ class MemoryStore extends Actor {
     }
     case GetLeague(name) => self.reply(leagues.get(name))
     case GetLeagues() => self.reply(leagues.values.toList)
-    case DeleteLeague(leagueName) => {
-      leagues.contains(leagueName) match {
+    case DeleteLeague(name) => {
+      leagues.contains(name) match {
         case false => self.reply(false)
         case true => {
-          leagues = leagues - leagueName
+          leagues = leagues - name
           self.reply(true)
         }
       }

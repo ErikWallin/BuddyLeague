@@ -95,10 +95,13 @@ class MongoDbStore extends Actor {
 	  }
   	Right(mongoDB("leagues"))
   }
+  
+  def getDBObjectForString(id: String) = MongoDBObject("_id" -> id)
+  def getDBObjectForLong(id: Long) = MongoDBObject("_id" -> id)
 
   protected def receive = {
     case CreateLeague(league) => {
-      leagues.findOne(MongoDBObject("_id" -> league.name)) match {
+      leagues.findOne(getDBObjectForString(league.name)) match {
         case Some(dbObject) => self.reply(false)
         case None => {
           leagues += grater[League].asDBObject(league)
@@ -107,7 +110,7 @@ class MongoDbStore extends Actor {
       }
     }
     case GetLeague(name) => {
-      leagues.findOne(MongoDBObject("_id" -> name)) match {
+      leagues.findOne(getDBObjectForString(name)) match {
         case Some(dbObject) => self.reply(Some(grater[League].asObject(dbObject)))
         case None => self.reply(None)
       }
@@ -115,67 +118,25 @@ class MongoDbStore extends Actor {
     case GetLeagues() => {
       self.reply(leagues.map(grater[League].asObject(_)).toList)
     }
-    case DeleteLeague(leagueName) => {
+    case DeleteLeague(name) => {
+      leagues.remove(getDBObjectForString(name))
       self.reply(true)
-//      leagues.contains(leagueName) match {
-//        case false => self.reply(false)
-//        case true => {
-//          leagues = leagues - leagueName
-//          self.reply(true)
-//        }
-//      }
     }
     case AddGameToLeague(leagueName, game) => {
+      leagues.update(getDBObjectForString(leagueName), $push("games" -> grater[Game].asDBObject(game)))
       self.reply(true)
-//      leagues.get(leagueName) match {
-//        case None => self.reply(false)
-//        case Some(league) => {
-//          leagues = leagues - leagueName
-//          leagues = leagues + (leagueName -> league.copy(games = game :: league.games))
-//          self.reply(true)
-//        }
-//      }
     }
     case DeleteGameFromLeague(leagueName, gameTimestamp) => {
+      leagues.update(getDBObjectForString(leagueName), $pull("games" -> getDBObjectForLong(gameTimestamp)))
       self.reply(true)
-//      leagues.get(leagueName) match {
-//        case None => self.reply(false)
-//        case Some(league) => {
-//          league.getGame(gameTimestamp) match {
-//            case Some(game) => {
-//              leagues = leagues - leagueName
-//              leagues = leagues + (leagueName -> league.copy(games = league.games.filterNot(_ == game)))
-//            }
-//            case None => self.reply(false)
-//          }
-//        }
-//      }
     }
     case AddPlayerToLeague(leagueName, player) => {
+      leagues.update(getDBObjectForString(leagueName), $push("players" -> grater[Player].asDBObject(player)))
       self.reply(true)
-//      leagues.get(leagueName) match {
-//        case None => self.reply(false)
-//        case Some(league) => {
-//          leagues = leagues - leagueName
-//          leagues = leagues + (leagueName -> league.copy(players = player :: league.players))
-//          self.reply(true)
-//        }
-//      }
     }
     case DeletePlayerFromLeague(leagueName, playerName) => {
+      leagues.update(getDBObjectForString(leagueName), $pull("games" -> getDBObjectForString(playerName)))
       self.reply(true)
-//      leagues.get(leagueName) match {
-//        case None => self.reply(false)
-//        case Some(league) => {
-//          league.getPlayer(playerName) match {
-//            case Some(player) => {
-//              leagues = leagues - leagueName
-//              leagues = leagues + (leagueName -> league.copy(players = league.players.filterNot(_ == player)))
-//            }
-//            case None => self.reply(false)
-//          }
-//        }
-//      }
     }
   }
 }
